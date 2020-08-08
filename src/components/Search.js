@@ -18,9 +18,23 @@ const Search = () => {
       });
       setResults(data.query.search);
     }
-    if (term) {
+
+    let timerId = null;
+    // if we set an initial term in useState above, search immediately
+    if (term && !results) {
       search();
+    } else {
+      // debounce and keep timer id
+      timerId = setTimeout(() => {
+        if (term) {
+          search();
+        }
+      }, 500);
     }
+    return () => {
+      clearTimeout(timerId);
+    };
+
   }, [term]);
 
   const renderedResults = results.map((result) => {
